@@ -14,7 +14,6 @@ const (
 )
 
 func main() {
-
 	w := gocv.NewWindow("Image Read")
 	defer w.Close()
 
