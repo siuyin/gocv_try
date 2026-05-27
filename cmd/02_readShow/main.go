@@ -9,9 +9,9 @@ import (
 const img = "images/space_shuttle.jpg"
 
 func main() {
-	imgGray := gocv.IMRead(img, gocv.IMReadGrayScale)
+	imgGray := gocv.IMRead(img, gocv.IMReadColor)
 	w := gocv.NewWindow("Image Read")
 	w.IMShow(imgGray)
 	fmt.Println("Press any key to exit.")
-	w.WaitKey(0)
+	fmt.Printf("keycode: %d detected. Exiting.\n", w.WaitKey(0))
 }
