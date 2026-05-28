@@ -37,6 +37,7 @@ func main() {
 
 		w.IMShow(img)
 		if key := w.WaitKey(int(1.0 / fps * 1000)); key == 'q' {
+			fmt.Println("'q' pressed. Exiting now.")
 			break
 		}
 	}
