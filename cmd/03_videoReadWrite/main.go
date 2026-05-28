@@ -12,6 +12,7 @@ const src = 0
 
 func main() {
 	imgPtr := captureLastVideoFrame()
+	defer imgPtr.Close()
 
 	if ok := gocv.IMWriteWithParams("scratch/capturedImage.jpg", *imgPtr, []int{gocv.IMWriteJpegQuality, 70}); ok {
 		return
