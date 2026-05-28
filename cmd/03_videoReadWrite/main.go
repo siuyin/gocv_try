@@ -31,6 +31,7 @@ func main() {
 	defer img.Close()
 
 	fmt.Println("Press q to quit.")
+	w.ResizeWindow(640, 480)
 	for {
 		if ok := cap.Read(&img); !ok {
 			fmt.Println("error reading: ", src)
@@ -42,7 +43,7 @@ func main() {
 			fmt.Println("'q' pressed. Exiting now.")
 			break
 		}
-		w.SetWindowProperty(gocv.WindowPropertyFullscreen, gocv.WindowFullscreen)
+		// w.SetWindowProperty(gocv.WindowPropertyFullscreen, gocv.WindowFullscreen)
 		w.IMShow(img)
 	}
 
