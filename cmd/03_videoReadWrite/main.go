@@ -14,11 +14,12 @@ func main() {
 	imgPtr := captureLastVideoFrame()
 	defer imgPtr.Close()
 
-	if ok := gocv.IMWriteWithParams("scratch/capturedImage.jpg", *imgPtr, []int{gocv.IMWriteJpegQuality, 70}); ok {
+	if ok := gocv.IMWriteWithParams("scratch/capturedImage.jpg", *imgPtr, []int{gocv.IMWriteJpegQuality, 70}); !ok {
+		fmt.Println("Image write failed")
 		return
 	}
-	fmt.Println("Image write failed")
 
+	writeVideo(imgPtr)
 }
 
 func captureLastVideoFrame() *gocv.Mat {
@@ -53,6 +54,9 @@ func captureLastVideoFrame() *gocv.Mat {
 		w.IMShow(img)
 	}
 
+	if &img == nil {
+		log.Fatal("no image to return")
+	}
 	return &img
 }
 
@@ -64,4 +68,22 @@ func printStructuralMetadata(cap *gocv.VideoCapture) {
 
 	frameCount := cap.Get(gocv.VideoCaptureFrameCount)
 	fmt.Printf("%v has %g, %s encoded frames.\n", src, frameCount, cap.CodecString())
+}
+
+func writeVideo(imgPtr *gocv.Mat) {
+	out := "scratch/capturedVid.mp4"
+	fmt.Println("Writing", out, imgPtr.Rows(), imgPtr.Cols())
+	w, err := gocv.VideoWriterFile(out, "mp4v", 30.0, imgPtr.Cols(), imgPtr.Rows(), true)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer w.Close()
+
+	for i := 0; i < 30*5; i++ {
+		if err := w.Write(*imgPtr); err != nil {
+			log.Println(err)
+			return
+		}
+	}
+	fmt.Println(out, "written")
 }
