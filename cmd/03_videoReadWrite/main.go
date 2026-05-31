@@ -73,7 +73,7 @@ func printStructuralMetadata(cap *gocv.VideoCapture) {
 func writeVideo(imgPtr *gocv.Mat) {
 	out := "scratch/capturedVid.mp4"
 	fmt.Println("Writing", out, imgPtr.Rows(), imgPtr.Cols())
-	w, err := gocv.VideoWriterFile(out, "mp4v", 30.0, imgPtr.Cols(), imgPtr.Rows(), true)
+	w, err := gocv.VideoWriterFile(out, "avc1", 30.0, imgPtr.Cols(), imgPtr.Rows(), true)
 	if err != nil {
 		log.Fatal(err)
 	}
