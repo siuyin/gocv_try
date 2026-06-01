@@ -15,6 +15,7 @@ func main() {
 	defer w.Close()
 
 	img := gocv.IMRead(imgFile, gocv.IMReadUnchanged)
+	defer img.Close()
 	fmt.Println("Original Image", img.Cols(), img.Rows())
 	if err := w.ResizeWindow(img.Cols(), img.Rows()); err != nil {
 		log.Fatal(err)
@@ -25,6 +26,7 @@ func main() {
 
 	// Enlargement --------------------------------------------------------------------------------
 	enlargeImg := gocv.NewMat()
+	defer enlargeImg.Close()
 	if err := gocv.Resize(img, &enlargeImg, image.Point{}, 2, 2, gocv.InterpolationCubic); err != nil {
 		log.Fatal(err)
 	}
@@ -40,7 +42,8 @@ func main() {
 
 	// Reduction --------------------------------------------------------------------------------
 	reduceImg := gocv.NewMat()
-	if err := gocv.Resize(img, &reduceImg, image.Point{300, 300}, 0, 0, gocv.InterpolationArea); err != nil {
+	defer reduceImg.Close()
+	if err := gocv.Resize(img, &reduceImg, image.Point{int(float32(img.Cols()) * 0.7), int(float32(img.Rows()) * 0.7)}, 0, 0, gocv.InterpolationArea); err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println("Reduced Image", reduceImg.Cols(), reduceImg.Rows())
