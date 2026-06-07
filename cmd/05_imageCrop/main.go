@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"image"
 
 	"gocv.io/x/gocv"
 )
@@ -17,4 +18,15 @@ func main() {
 		fmt.Printf(" %d", d)
 	}
 	fmt.Println("\nNumber of channels:", img.Channels())
+
+	limits := image.Rectangle{image.Point{150, 80}, image.Point{330, 280}}
+	cropped := img.Region(limits)
+	defer cropped.Close()
+
+	w := gocv.NewWindow("Image Crop")
+	defer w.Close()
+
+	w.IMShow(cropped)
+	fmt.Println("Press any key to close window.")
+	w.WaitKey(0)
 }
