@@ -18,18 +18,17 @@ func main() {
 	defer w.Close()
 
 	w.IMShow(img)
-	r, c := center(&img)
-	fmt.Println(r, c)
+	c := center(&img)
 	rW := gocv.NewWindow("Rotated")
-	rW.IMShow(*rotate(&img, image.Point{r, c}, 45.0, 1.0))
+	rW.IMShow(*rotate(&img, c, 45.0, 2))
 	fmt.Println("Press any key to close window.")
 	w.WaitKey(0)
 
 }
 
-func center(imgPtr *gocv.Mat) (row, col int) {
+func center(imgPtr *gocv.Mat) image.Point {
 	dims := imgPtr.Size()
-	return dims[1] / 2, dims[0] / 2
+	return image.Point{dims[1] / 2, dims[0] / 2}
 }
 
 func rotate(imgPtr *gocv.Mat, center image.Point, angle float64, scale float64) *gocv.Mat {
