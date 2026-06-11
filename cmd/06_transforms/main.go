@@ -58,7 +58,8 @@ func bytesFromFloat32(fs []float32) []byte {
 }
 
 func translate(imgPtr *gocv.Mat, x, y float32) *gocv.Mat {
-	tMat, err := gocv.NewMatFromBytes(2, 3, gocv.MatTypeCV32FC1, bytesFromFloat32([]float32{1, 0, x, 0, 1, y}))
+	//tMat, err := gocv.NewMatFromBytes(2, 3, gocv.MatTypeCV32FC1, bytesFromFloat32([]float32{1, 0, x, 0, 1, y}))
+	tMat, err := gocv.NewMatFromBytes(2, 3, gocv.MatTypeCV32F, bytesFromFloat32([]float32{1, 0, x, 0, 1, y}))
 	if err != nil {
 		log.Fatal(err)
 	}
