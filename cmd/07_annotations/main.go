@@ -44,7 +44,7 @@ func display(title string, img gocv.Mat) *gocv.Window {
 
 func line(src gocv.Mat, start, end image.Point, c color.RGBA, thickness int) gocv.Mat {
 	ovr := src.Clone()
-	if err := gocv.Line(&ovr, start, end, c, thickness); err != nil {
+	if err := gocv.RectangleWithParams(&ovr, image.Rectangle{start, end}, c, thickness, gocv.LineAA, 0); err != nil {
 		log.Fatal(err)
 	}
 
