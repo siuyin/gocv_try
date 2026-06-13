@@ -19,12 +19,12 @@ func main() {
 	w := display("Source", img)
 	defer w.Close()
 
-	ln := line(img, image.Point{133, 144}, image.Point{259, 133}, color.RGBA{0, 32, 200, 255}, 32)
+	ln := line(img, image.Point{133, 144}, image.Point{259, 133}, color.RGBA{0, 32, 200, 64}, 32)
 	defer ln.Close()
 	wLn := display("Line", ln)
 	defer wLn.Close()
 
-	c := circ(img, image.Point{196, 174}, 24, color.RGBA{255, 0, 0, 127}, 4)
+	c := circ(img, image.Point{196, 174}, 24, color.RGBA{255, 0, 0, 127}, -1) // use thickness of -1 for filled circle
 	defer c.Close()
 	wC := display("Circle", c)
 	defer wC.Close()
@@ -43,10 +43,13 @@ func display(title string, img gocv.Mat) *gocv.Window {
 }
 
 func line(src gocv.Mat, start, end image.Point, c color.RGBA, thickness int) gocv.Mat {
-	img := src.Clone()
-	if err := gocv.Line(&img, start, end, c, thickness); err != nil {
+	ovr := src.Clone()
+	if err := gocv.Line(&ovr, start, end, c, thickness); err != nil {
 		log.Fatal(err)
 	}
+
+	alpha := float64(c.A) / 255.0
+	img := alphaBlend(src, ovr, alpha)
 	return img
 }
 
@@ -54,15 +57,19 @@ func circ(src gocv.Mat, ctr image.Point, radius int, c color.RGBA, thickness int
 	ovr := src.Clone()
 	defer ovr.Close()
 
-	if err := gocv.Circle(&ovr, ctr, radius, c, thickness); err != nil {
+	if err := gocv.CircleWithParams(&ovr, ctr, radius, c, thickness, gocv.LineAA, 0); err != nil {
 		log.Fatal(err)
 	}
-	img := gocv.NewMat()
-
 	alpha := float64(c.A) / 255.0
+	img := alphaBlend(src, ovr, alpha)
+
+	return img
+}
+
+func alphaBlend(src, ovr gocv.Mat, alpha float64) gocv.Mat {
+	img := gocv.NewMat()
 	if err := gocv.AddWeighted(src, 1-alpha, ovr, alpha, 0, &img); err != nil {
 		log.Fatal(err)
 	}
-
 	return img
 }
