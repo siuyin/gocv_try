@@ -29,6 +29,11 @@ func main() {
 	wC := display("Circle", c)
 	defer wC.Close()
 
+	e := ellipse(img, image.Point{196, 174}, image.Point{45, 27}, 0, 90, 270, color.RGBA{255, 0, 0, 127}, -1)
+	defer e.Close()
+	wE := display("Ellipse", e)
+	defer wE.Close()
+
 	fmt.Println("Press any key to close window.")
 	w.WaitKey(0)
 }
@@ -73,3 +78,19 @@ func alphaBlend(src, ovr gocv.Mat, alpha float64) gocv.Mat {
 	}
 	return img
 }
+<<<<<<< HEAD
+=======
+
+func ellipse(src gocv.Mat, ctr, axes image.Point, angle, startAngle, endAngle float64, c color.RGBA, thickness int) gocv.Mat {
+	ovr := src.Clone()
+	defer ovr.Close()
+
+	if err := gocv.EllipseWithParams(&ovr, ctr, axes, angle, startAngle, endAngle, c, thickness, gocv.LineAA, 0); err != nil {
+		log.Fatal(err)
+	}
+
+	alpha := float64(c.A) / 255.0
+	img := alphaBlend(src, ovr, alpha)
+	return img
+}
+>>>>>>> dev
