@@ -35,6 +35,11 @@ func main() {
 	wG := display("Gaussian Blurred", g)
 	defer wG.Close()
 
+	s := sharpen(img)
+	defer s.Close()
+	wS := display("Sharpened", s)
+	defer wS.Close()
+
 	fmt.Println("Press any key to close window.")
 	w.WaitKey(0)
 }
@@ -85,5 +90,22 @@ func gaussBlur(src gocv.Mat) gocv.Mat {
 	if err := gocv.GaussianBlur(src, &dst, image.Point{5, 5}, 0, 0, gocv.BorderConstant); err != nil {
 		log.Fatal(err)
 	}
+	return dst
+}
+
+func sharpen(src gocv.Mat) gocv.Mat {
+	knl, err := gocv.NewMatFromBytes(3, 3, gocv.MatTypeCV32F, bytesFromFloat32([]float32{
+		0, -1, 0,
+		-1, 5, -1,
+		0, -1, 0}))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	dst := gocv.NewMat()
+	if err := gocv.Filter2D(src, &dst, -1, knl, image.Point{-1, -1}, 0, gocv.BorderConstant); err != nil {
+		log.Fatal(err)
+	}
+
 	return dst
 }
