@@ -34,6 +34,11 @@ func main() {
 	wE := display("Ellipse", e)
 	defer wE.Close()
 
+	t := text(img, "Happy Dog", image.Point{78, 40}, gocv.FontHersheySimplex, 1.0, color.RGBA{0, 0, 255, 127}, 4)
+	defer t.Close()
+	wT := display("Text", t)
+	defer wT.Close()
+
 	fmt.Println("Press any key to close window.")
 	w.WaitKey(0)
 }
@@ -90,4 +95,18 @@ func ellipse(src gocv.Mat, ctr, axes image.Point, angle, startAngle, endAngle fl
 	alpha := float64(c.A) / 255.0
 	img := alphaBlend(src, ovr, alpha)
 	return img
+}
+
+func text(src gocv.Mat, text string, org image.Point, fontFace gocv.HersheyFont, fontScale float64, c color.RGBA, thickness int) gocv.Mat {
+	ovr := src.Clone()
+	defer ovr.Close()
+
+	if err := gocv.PutTextWithParams(&ovr, text, org, fontFace, fontScale, c, thickness, gocv.LineAA, false); err != nil {
+		log.Fatal(err)
+	}
+
+	alpha := float64(c.A) / 255.0
+	img := alphaBlend(src, ovr, alpha)
+	return img
+
 }
