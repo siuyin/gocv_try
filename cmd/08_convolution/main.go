@@ -40,6 +40,11 @@ func main() {
 	wS := display("Sharpened", s)
 	defer wS.Close()
 
+	bl := bilateral(img, 1, 0.3, 0.5)
+	defer bl.Close()
+	wBl := display("Bilateral Filtered", b)
+	defer wBl.Close()
+
 	fmt.Println("Press any key to close window.")
 	w.WaitKey(0)
 }
@@ -107,5 +112,19 @@ func sharpen(src gocv.Mat) gocv.Mat {
 		log.Fatal(err)
 	}
 
+	return dst
+}
+
+func bilateral(src gocv.Mat, diameter int, sigmaColor, sigmaSpace float64) gocv.Mat {
+	sCopy := gocv.NewMat()
+	if err := gocv.CvtColor(src, &sCopy, gocv.ColorRGBAToRGB); err != nil {
+		log.Fatal(err)
+	}
+	defer sCopy.Close()
+
+	dst := gocv.NewMat()
+	if err := gocv.BilateralFilter(sCopy, &dst, diameter, sigmaColor, sigmaSpace); err != nil {
+		log.Fatal(err)
+	}
 	return dst
 }
