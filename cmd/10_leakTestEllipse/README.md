@@ -1,0 +1,1 @@
+* **Exercise 1.2: Dynamic Canvas Generator.** Construct an empty 3-channel matrix (`gocv.NewMatWithSize`). Write a custom loop that explicitly modifies individual pixels using `.SetUCharAt()` or directly manipulating the underlying slice, rendering a custom geometric gradient pattern onto the matrix.
