@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 	"log"
@@ -22,35 +21,34 @@ var colors = []color.RGBA{
 	{R: 0, G: 0, B: 0, A: 0},       // Black
 }
 
+const (
+	width  = 1280
+	height = 720
+)
+
 func main() {
-	for i := 0; i < 300000; i++ {
-		displayFor(fmt.Sprintf("%d", i+1), 1000*time.Millisecond)
+	w := gocv.NewWindow("random bars")
+	defer w.Close()
+
+	if err := w.ResizeWindow(width, height); err != nil {
+		log.Fatal(err)
+	}
+
+	for i := 0; i < 200; i++ {
+		displayFor(w, 100*time.Millisecond)
 	}
 }
 
-func displayFor(title string, t time.Duration) {
+func displayFor(w *gocv.Window, t time.Duration) {
 	img := perturbColorBars()
 	defer img.Close()
-	w := display(title, img)
-	defer w.Close()
+
+	w.IMShow(img)
 
 	w.WaitKey(int(t / 1000000))
 }
 
-func display(title string, img gocv.Mat) *gocv.Window {
-	w := gocv.NewWindow(title)
-	if err := w.ResizeWindow(img.Cols(), img.Rows()); err != nil {
-		log.Fatal(err)
-	}
-	w.IMShow(img)
-	return w
-}
-
 func perturbColorBars() gocv.Mat {
-	const (
-		width  = 1280
-		height = 720
-	)
 
 	img := gocv.NewMatWithSize(height, width, gocv.MatTypeCV8UC3)
 	numBars := len(colors)
